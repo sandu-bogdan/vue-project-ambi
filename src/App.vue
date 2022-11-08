@@ -86,10 +86,6 @@
 </div>
 
 </body>
-
-
-
-<RouterLink to="/sign-in">Autentificare</RouterLink>
 </template>
 
 <script setup>
