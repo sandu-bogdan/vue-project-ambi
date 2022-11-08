@@ -14,7 +14,7 @@
               Prima pagina</RouterLink>
             </li>
           <hr class="sidebar-divider">
-          
+
           <li class="nav-item">
             <RouterLink class="nav-link" to="/about"><i class="fas fa-history fa-fw"></i>
               About</RouterLink>
