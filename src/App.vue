@@ -6,7 +6,7 @@
             <div class="sidebar-brand-icon rotate-n-15">
               <i class="fas fa-laugh-wink"></i>
             </div>
-            <div class="sidebar-brand-text mx-3">AMBI <sup>PI NEW</sup></div>
+            <div class="sidebar-brand-text mx-3">AMBI <sup>PI NEWs</sup></div>
           </a>
           <hr class="sidebar-divider my-0">
           <li class="nav-item active">
