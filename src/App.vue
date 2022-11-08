@@ -72,7 +72,7 @@
                         </a>
                         <a class="dropdown-item" href="change-password.php">
                             <i class="fas fa-user-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                            Schimba parola
+                            Schimba parola 
                         </a>
                     </div>
                 </li>
