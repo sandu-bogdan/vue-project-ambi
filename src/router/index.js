@@ -42,13 +42,15 @@ const router = createRouter({
     },
     {
       path: '/list',
-      name: "list",
       component: () => import('../components/TutorialsList.vue')
     },
     {
       path: '/add',
-      name: "add",
       component: () => import('../components/AddTutorial.vue')
+    },
+    {
+      path: '/welcome',
+      component: () => import('../components/HelloWorld.vue')
     },
   ],
 });

@@ -1,8 +1,10 @@
+import { getDatabase, ref, onValue} from "firebase/database";
 
-import firebase from "../main.js";
+const db = getDatabase();
 
+const database = getDatabase();
 
-const db = firebase.ref("/tutorials");
+//const db = getDatabase("/tutorials");
 
 class TutorialDataService {
   getAll() {
