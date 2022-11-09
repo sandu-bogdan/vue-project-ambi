@@ -80,6 +80,7 @@
 <!-- Begin Page Content -->
 
 <RouterView/>
+<router-link to="/add" class="nav-link">Add</router-link>
 </div>
 </div>
 </div>

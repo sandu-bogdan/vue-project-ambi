@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
+import "firebase/database"
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
@@ -36,4 +37,6 @@ initializeApp(firebaseConfig);
 app.use(router)
 
 app.mount('#app');
+firebase.initializeApp(config);
+export default firebase.database();
 

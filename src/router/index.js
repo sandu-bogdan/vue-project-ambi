@@ -40,6 +40,16 @@ const router = createRouter({
         requiresAuth: true,
       },
     },
+    {
+      path: '/list',
+      name: "list",
+      component: () => import('../components/TutorialsList.vue')
+    },
+    {
+      path: '/add',
+      name: "add",
+      component: () => import('../components/AddTutorial.vue')
+    },
   ],
 });
 
