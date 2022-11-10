@@ -1,6 +1,6 @@
 import { getDatabase, ref, onValue} from "firebase/database";
-
 const db = getDatabase();
+
 
 const database = getDatabase();
 
@@ -11,6 +11,10 @@ class TutorialDataService {
     return db;
   }
 
+  getTemperature(){
+    return db.child("temperature").get();
+  }
+  
   create(tutorial) {
     return db.push(tutorial);
   }

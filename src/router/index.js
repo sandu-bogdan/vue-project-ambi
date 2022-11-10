@@ -52,6 +52,10 @@ const router = createRouter({
       path: '/welcome',
       component: () => import('../components/HelloWorld.vue')
     },
+    {
+      path: '/view',
+      component: () => import('../components/ViewTemp.vue')
+    },
   ],
 });
 
