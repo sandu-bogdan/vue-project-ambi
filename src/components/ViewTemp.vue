@@ -1,19 +1,23 @@
 <template>
-{{hum}} test
-  </template>
+Umiditate: {{hum}}
+</template>
   
   <script>
-  //initialization
  import { getDatabase, ref, set,  onValue } from "firebase/database";
-    const db = getDatabase();
-    onValue(ref(db, 'hum'), (snapshot) => {
-        const data = snapshot.val();
-        console.log(data);
-        const hum = data;
-        return hum;
-    });
-    
-    export default {
-
-        };
-  </script>
+ export default {
+    data () {
+        return {
+            hum: null,
+        }
+    },
+    created (){
+        const db = getDatabase();
+        onValue(ref(db, 'hum'), (snapshot) => {
+            const data = snapshot.val();
+            console.log(data);
+            const hum = data;
+            this.hum = hum;
+        });
+    }
+};
+</script>
