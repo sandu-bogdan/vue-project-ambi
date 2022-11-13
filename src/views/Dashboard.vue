@@ -19,7 +19,7 @@
           <span class="blink"></span> Temperatura
          </div>
          <div class="h5 mb-0 font-weight-bold text-gray-800">
-            <span id="load_updates"></span>&#176;C
+            <span>{{temp}}</span>&#176;C
          </div>
          <span style="font-size:80%">Temperatura ambientala curenta</span>
         </div>
@@ -41,7 +41,7 @@
           <span class="blink"></span> Temperatura exterioara
          </div>
          <div class="h5 mb-0 font-weight-bold text-gray-800">
-            <span id="load_temp_ext"></span>&#176;C
+            <span>{{tempExt}}</span>&#176;C
          </div>
          <span style="font-size:80%">Temperatura exterioara curenta</span>
         </div>
@@ -62,7 +62,7 @@
           <span class="blink"></span> Umiditate
          </div>
          <div class="h5 mb-0 font-weight-bold text-gray-800">
-         <span id="load_hum"></span>%
+         <span>{{hum}}</span>%
          </div>
          <span style="font-size:80%">Detectie umiditate ambientala curenta</span>
         </div>
@@ -98,10 +98,168 @@
      </div>
     </div>
     </div>
-
-
-</div>
-</div>
-
+{{dataViewTemp}}<br>
+    <Bar
+    :chart-options="chartOptions"
+    :chart-data="chartData"
+    :chart-id="chartId"
+    :dataset-id-key="datasetIdKey"
+    :plugins="plugins"
+    :css-classes="cssClasses"
+    :styles="styles"
+    :width="width"
+    :height="height"
+  />
     
+</div>
+</div>
+
 </template>
+
+<script>
+
+import { getDatabase, ref, set,  onValue, limitToLast, get, query} from "firebase/database";
+import { Bar } from 'vue-chartjs'
+import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
+ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
+
+let testTemp = [];
+let rrr = [];	
+// a promise
+let promise = new Promise(function (resolve, reject) {
+    setTimeout(function () {
+    resolve('Promise resolved')}, 2000); 
+});
+
+
+      async function viTemp(){
+  const db = getDatabase();
+  let limitEntries = 5;
+  let countEntries = 0;
+  get(query(ref(db, '/sensor/Temperature'), limitToLast(limitEntries))).then((snapshot)=> {if(snapshot){
+    let data = snapshot.val();
+    for (var [, array] of Object.entries(data)) {
+      countEntries++;
+        for(let [type, value] of Object.entries(array)){
+          if(type=="temp"){
+            testTemp.push(value);
+            testTemp[countEntries]=value;
+
+        }
+        if(type=="time"){
+          //console.log(value);
+        }
+      }
+    } 
+  }})
+  
+  let result = await promise; 
+  console.log(result);
+  //console.log(testTemp);
+  return testTemp;
+}
+
+
+const dataTemp = viTemp().then(dataTemp => {
+  console.log(dataTemp);
+  return dataTemp;
+}).catch(err => {
+    console.log(err);
+  });
+  
+
+
+ export default {
+    name: 'BarChart',
+  components: { Bar },
+  props: {
+    chartId: {
+      type: String,
+      default: 'bar-chart'
+    },
+    datasetIdKey: {
+      type: String,
+      default: 'label'
+    },
+    width: {
+      type: Number,
+      default: 400
+    },
+    height: {
+      type: Number,
+      default: 400
+    },
+    cssClasses: {
+      default: '',
+      type: String
+    },
+    styles: {
+      type: Object,
+      default: () => {}
+    },
+    plugins: {
+      type: Object,
+      default: () => {}
+    }
+},
+    data () {
+        return {
+            hum: null,
+            viewTemp: [1],
+            temp: null,
+            tempExt: null,
+            historyTemp: null,
+            dataViewTemp : viTemp().then(dataTemp => { this.dataViewTemp = dataTemp; }),
+            chartData:{ labels: [ 'January', 'February', 'March' ], datasets: [ { data: viTemp().then(dataTemp=>{this.chartData.datasets[0].data = dataTemp;}) } ] },
+            chartOptions: {
+              responsive: true
+            },
+          }
+        },
+        
+        created (){
+      
+      const db = getDatabase();
+        onValue(ref(db, 'hum'), (snapshot) => {
+            const data = snapshot.val();
+            console.log(Number(data).toFixed(2));
+            const hum = data;
+            this.hum = Number(hum).toFixed(2);
+        });
+
+        onValue(ref(db, 'temp'), (snapshot) => {
+            const data = snapshot.val();
+            console.log(Number(data).toFixed(2));
+            const temp = data;
+            this.temp = Number(temp).toFixed(2);
+        });
+
+        onValue(ref(db, 'temp-ext'), (snapshot) => {
+            const data = snapshot.val();
+            console.log(Number(data).toFixed(2));
+            const tempExt = data;
+            this.tempExt = Number(tempExt).toFixed(2);
+        });
+
+        onValue(query(ref(db, '/sensor/Temperature'), limitToLast(5)), (snapshot) => {
+            const data = snapshot.val();
+            for (const [, array] of Object.entries(data)) {
+                for(const [type, value] of Object.entries(array)){
+                    if(type=="temp"){
+                    //console.log(value);
+                }
+                    if(type=="time"){
+                    //console.log(value);
+                }
+                }
+            }
+            //console.log(data);
+        });
+
+        get(query(ref(db, '/sensor/Temperature'), limitToLast(1))).then((snapshot)=> {
+            const data = snapshot.val();
+            //console.log(data);
+        });
+
+    }
+};</script>
