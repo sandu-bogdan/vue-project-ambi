@@ -110,6 +110,19 @@
     :width="width"
     :height="height"
   />
+
+  
+  <Bar
+    :chart-options="chartOptions"
+    :chart-data="chartDataTempExt"
+    :chart-id="chartId"
+    :dataset-id-key="datasetIdKey"
+    :plugins="plugins"
+    :css-classes="cssClasses"
+    :styles="styles"
+    :width="width"
+    :height="height"
+  />
     
 </div>
 </div>
@@ -125,11 +138,36 @@ ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
 let testTemp = [];
 let timeValue = [];
+
+let timeSensor = [];
+let valueSensor = [];
 let promise = new Promise(function (resolve, reject){
   setTimeout(function (){
     resolve('Promise resolved')}, 2000);
   });
-  
+
+  async function returnChartData(limitEntries, path, typeSensor){
+    const db = getDatabase();
+    get(query(ref(db,path), limitToLast(limitEntries))).then((snapshot)=>{
+      if(snapshot){
+        let data = snapshot.val();
+        for(var[, array] of Object.entries(data)){
+          for(var [type, value] of Object.entries(array)){
+            if(type==typeSensor){
+              valueSensor.push(value);
+            }
+            if(type=='time'){
+              timeSensor.push(value);
+            }
+          }
+        }
+      }
+    })
+    var result = await promise;
+    console.log(result);
+    return {timeSensor, valueSensor};
+  }
+
   async function viTemp(){
     const db = getDatabase();
     let limitEntries = 50;
@@ -196,8 +234,10 @@ let promise = new Promise(function (resolve, reject){
             historyTemp: null,
             //chartData:{ labels: [ 'January', 'February', 'March', "2"], datasets: [ { data: viTemp().then(result=>{this.chartData.datasets[0].data = result.testTemp; console.log(result.testTemp);}) } ] },
             //chartData:{ labels: [viTemp().then(result=>{this.chartData.labels = result.timeValue; console.log(result.timeValue)})], datasets: [ { data: viTemp().then(result=>{this.chartData.datasets[0].data = result.testTemp; console.log(result.testTemp);}) } ] },
-            chartData:{ labels: [viTemp().then(result=>{this.chartData.labels = result.timeValue; this.chartData.datasets[0].data = result.testTemp; console.log(result.timeValue); console.log(result.testTemp)})], datasets: [ { } ] },
-
+           // chartData:{ labels: [viTemp().then(result=>{this.chartData.labels = result.timeValue; this.chartData.datasets[0].data = result.testTemp; console.log(result.timeValue); console.log(result.testTemp)})], datasets: [ { } ] },
+            chartData:{ labels: [returnChartData(50,'/sensor/Temperature','temp').then(result=>{this.chartData.labels = result.timeSensor; this.chartData.datasets[0].data = result.valueSensor; console.log(result.timeSensor); console.log(result.valueSensor)})], datasets: [ { } ] },
+            chartDataTempExt:{ labels: [returnChartData(50,'/sensor/Temperature-Ext','temp').then(result=>{this.chartDataTempExt.labels = result.timeSensor; this.chartDataTempExt.datasets[0].data = result.valueSensor; console.log(result.timeSensor); console.log(result.valueSensor)})], datasets: [ { } ] },
+            
             //chartData:{ labels: viTemp().then(time=>{this.labels= time.timeValue}), datasets: [ { data: viTemp().then(dataTemp=>{this.chartData.datasets[0].data = dataTemp.testTemp; console.log(dataTemp.testTemp);}) } ] },
 
 
