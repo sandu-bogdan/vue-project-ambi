@@ -98,7 +98,7 @@
      </div>
     </div>
     </div>
-{{dataViewTemp}}<br>
+
     <Bar
     :chart-options="chartOptions"
     :chart-data="chartData"
@@ -124,49 +124,32 @@ import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, Li
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
 let testTemp = [];
-let rrr = [];	
-// a promise
+let timeValue = [];
 let promise = new Promise(function (resolve, reject) {
     setTimeout(function () {
     resolve('Promise resolved')}, 2000); 
 });
-
-
-      async function viTemp(){
+  async function viTemp(){
   const db = getDatabase();
-  let limitEntries = 5;
-  let countEntries = 0;
+  let limitEntries = 50;
   get(query(ref(db, '/sensor/Temperature'), limitToLast(limitEntries))).then((snapshot)=> {if(snapshot){
     let data = snapshot.val();
     for (var [, array] of Object.entries(data)) {
-      countEntries++;
         for(let [type, value] of Object.entries(array)){
           if(type=="temp"){
             testTemp.push(value);
-            testTemp[countEntries]=value;
-
         }
         if(type=="time"){
-          //console.log(value);
+           timeValue.push(value);
         }
       }
     } 
   }})
-  
   let result = await promise; 
   console.log(result);
-  //console.log(testTemp);
-  return testTemp;
+  return {timeValue, testTemp};
 }
-
-
-const dataTemp = viTemp().then(dataTemp => {
-  console.log(dataTemp);
-  return dataTemp;
-}).catch(err => {
-    console.log(err);
-  });
-  
+;
 
 
  export default {
@@ -183,7 +166,7 @@ const dataTemp = viTemp().then(dataTemp => {
     },
     width: {
       type: Number,
-      default: 400
+      default: 1000
     },
     height: {
       type: Number,
@@ -209,8 +192,15 @@ const dataTemp = viTemp().then(dataTemp => {
             temp: null,
             tempExt: null,
             historyTemp: null,
-            dataViewTemp : viTemp().then(dataTemp => { this.dataViewTemp = dataTemp; }),
-            chartData:{ labels: [ 'January', 'February', 'March' ], datasets: [ { data: viTemp().then(dataTemp=>{this.chartData.datasets[0].data = dataTemp;}) } ] },
+            //chartData:{ labels: [ 'January', 'February', 'March', "2"], datasets: [ { data: viTemp().then(result=>{this.chartData.datasets[0].data = result.testTemp; console.log(result.testTemp);}) } ] },
+
+            chartData:{ labels: [viTemp().then(result=>{this.chartData.labels = result.timeValue; console.log(result.timeValue)})], datasets: [ { data: viTemp().then(result=>{this.chartData.datasets[0].data = result.testTemp; console.log(result.testTemp);}) } ] },
+            
+
+            //chartData:{ labels: viTemp().then(time=>{this.labels= time.timeValue}), datasets: [ { data: viTemp().then(dataTemp=>{this.chartData.datasets[0].data = dataTemp.testTemp; console.log(dataTemp.testTemp);}) } ] },
+
+
+            //chartData: viTemp().then(dataTemp=>{this.chartData.datasets[0].labels = dataTemp.timeValue; this.chartData.datasets[0].data = dataTemp.testTemp, console.log(dataTemp);}),
             chartOptions: {
               responsive: true
             },
