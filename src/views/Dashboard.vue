@@ -98,8 +98,19 @@
      </div>
     </div>
     </div>
-
-    <Bar
+  </div>
+    <div class="row">
+    <div class="col-lg-6 mb-4">
+     <div class="card shadow mb-4">
+      <div class="card-header py-3">
+       <h6 class="m-0 font-weight-bold text-primary">
+        Grafic temperatura
+       </h6>
+      </div>
+      <div class="card-body">
+       <div id="chart-container">
+ 
+        <Bar
     :chart-options="chartOptions"
     :chart-data="chartData"
     :chart-id="chartId"
@@ -108,11 +119,24 @@
     :css-classes="cssClasses"
     :styles="styles"
     :width="width"
-    :height="height"
-  />
+    :height="height"/>
+       </div>
+      </div>
+     </div>
+    </div>
 
-  
-  <Bar
+    <div class="col-lg-6 mb-4">
+     <div class="card shadow mb-4">
+      <div class="card-header py-3">
+       <h6 class="m-0 font-weight-bold text-primary">
+        Grafic temperatura exterioara
+       </h6>
+      </div>
+      <div class="card-body">
+       <div id="chart-container-hum">
+        
+     
+        <Bar
     :chart-options="chartOptions"
     :chart-data="chartDataTempExt"
     :chart-id="chartId"
@@ -123,7 +147,48 @@
     :width="width"
     :height="height"
   />
+
+
+       </div>
+      </div>
+     </div>
+    </div>
+ 
+  
+
+    <div class="col-lg-6 mb-4">
+     <div class="card shadow mb-4">
+      <div class="card-header py-3">
+       <h6 class="m-0 font-weight-bold text-primary">
+        Grafic umiditate
+       </h6>
+      </div>
+      <div class="card-body">
+       <div id="chart-container-light">
+        <Bar
+    :chart-options="chartOptions"
+    :chart-data="chartDataTempHum"
+    :chart-id="chartId"
+    :dataset-id-key="datasetIdKey"
+    :plugins="plugins"
+    :css-classes="cssClasses"
+    :styles="styles"
+    :width="width"
+    :height="height"
+  />
+
+       </div>
+      </div>
+     </div>
+    </div>
+
+  
+
+
     
+
+
+
 </div>
 </div>
 
@@ -139,14 +204,15 @@ ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 let testTemp = [];
 let timeValue = [];
 
-let timeSensor = [];
-let valueSensor = [];
+
 let promise = new Promise(function (resolve, reject){
   setTimeout(function (){
     resolve('Promise resolved')}, 2000);
   });
 
   async function returnChartData(limitEntries, path, typeSensor){
+    let timeSensor = [];
+    let valueSensor = [];
     const db = getDatabase();
     get(query(ref(db,path), limitToLast(limitEntries))).then((snapshot)=>{
       if(snapshot){
@@ -235,9 +301,10 @@ let promise = new Promise(function (resolve, reject){
             //chartData:{ labels: [ 'January', 'February', 'March', "2"], datasets: [ { data: viTemp().then(result=>{this.chartData.datasets[0].data = result.testTemp; console.log(result.testTemp);}) } ] },
             //chartData:{ labels: [viTemp().then(result=>{this.chartData.labels = result.timeValue; console.log(result.timeValue)})], datasets: [ { data: viTemp().then(result=>{this.chartData.datasets[0].data = result.testTemp; console.log(result.testTemp);}) } ] },
            // chartData:{ labels: [viTemp().then(result=>{this.chartData.labels = result.timeValue; this.chartData.datasets[0].data = result.testTemp; console.log(result.timeValue); console.log(result.testTemp)})], datasets: [ { } ] },
-            chartData:{ labels: [returnChartData(50,'/sensor/Temperature','temp').then(result=>{this.chartData.labels = result.timeSensor; this.chartData.datasets[0].data = result.valueSensor; console.log(result.timeSensor); console.log(result.valueSensor)})], datasets: [ { } ] },
-            chartDataTempExt:{ labels: [returnChartData(50,'/sensor/Temperature-Ext','temp').then(result=>{this.chartDataTempExt.labels = result.timeSensor; this.chartDataTempExt.datasets[0].data = result.valueSensor; console.log(result.timeSensor); console.log(result.valueSensor)})], datasets: [ { } ] },
-            
+            chartData:{ labels: [returnChartData(10,'/sensor/Temperature','temp').then(result=>{this.chartData.labels = result.timeSensor; this.chartData.datasets[0].data = result.valueSensor; console.log(result.timeSensor); console.log(result.valueSensor)})], datasets: [ { } ] },
+            chartDataTempExt:{ labels: [returnChartData(10,'/sensor/Temperature-Ext','temp').then(result=>{this.chartDataTempExt.labels = result.timeSensor; this.chartDataTempExt.datasets[0].data = result.valueSensor; console.log(result.timeSensor); console.log(result.valueSensor)})], datasets: [ { } ] },
+            chartDataTempHum:{ labels: [returnChartData(10,'/sensor/Humidity','hum').then(result=>{this.chartDataTempHum.labels = result.timeSensor; this.chartDataTempHum.datasets[0].data = result.valueSensor; console.log(result.timeSensor); console.log(result.valueSensor)})], datasets: [ { } ] },
+
             //chartData:{ labels: viTemp().then(time=>{this.labels= time.timeValue}), datasets: [ { data: viTemp().then(dataTemp=>{this.chartData.datasets[0].data = dataTemp.testTemp; console.log(dataTemp.testTemp);}) } ] },
 
 
