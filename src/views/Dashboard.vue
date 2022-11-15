@@ -230,8 +230,10 @@ let promise = new Promise(function (resolve, reject){
     let timeSensor = [];
     let valueSensor = [];
     const db = getDatabase();
+    if(load != true){
     get(query(ref(db,path), limitToLast(limitEntries))).then((snapshot)=>{
       if(snapshot){
+        load = true;
         let data = snapshot.val();
         for(var[, array] of Object.entries(data)){
           for(var [type, value] of Object.entries(array)){
@@ -244,7 +246,7 @@ let promise = new Promise(function (resolve, reject){
           }
         }
       }
-    })
+    })}
     await promises;
     return {timeSensor, valueSensor};
   }
@@ -303,7 +305,7 @@ let promise = new Promise(function (resolve, reject){
           }
         },
         
-        created (){
+        created (){ 
       const db = getDatabase();
         onValue(ref(db, 'hum'), (snapshot) => {
             const data = snapshot.val();
