@@ -201,17 +201,24 @@ import { Bar } from 'vue-chartjs'
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
+
 let testTemp = [];
 let timeValue = [];
+var load = false;
+var timer;
+clearTimeout();
+
 
 let promises = new Promise(resolve => {
     if (document.readyState !== 'loading') {
       setTimeout(function (){
-        resolve();
+        console.log('resolved');
+        resolve('Promise resolved');
         return;}, 2000)
     }
-
-    document.addEventListener("DOMContentLoaded", () => resolve('Promise resolved'));
+    
+    window.addEventListener('click', () => clearTimeout(timer));
+    document.addEventListener("DOMContentLoaded", () => clearTimeout(timer));
 });
 
 let promise = new Promise(function (resolve, reject){
@@ -238,14 +245,9 @@ let promise = new Promise(function (resolve, reject){
         }
       }
     })
-    var result = await promises;
-    console.log(result);
+    await promises;
     return {timeSensor, valueSensor};
   }
-
- 
-
-
  export default {
     name: 'BarChart',
   components: { Bar },
@@ -294,8 +296,6 @@ let promise = new Promise(function (resolve, reject){
             chartDataTempHum:{ labels: [returnChartData(10,'/sensor/Humidity','hum').then(result=>{this.chartDataTempHum.labels = result.timeSensor; this.chartDataTempHum.datasets[0].data = result.valueSensor; console.log(result.timeSensor); console.log(result.valueSensor)})], datasets: [ { } ] },
 
             //chartData:{ labels: viTemp().then(time=>{this.labels= time.timeValue}), datasets: [ { data: viTemp().then(dataTemp=>{this.chartData.datasets[0].data = dataTemp.testTemp; console.log(dataTemp.testTemp);}) } ] },
-
-
             //chartData: viTemp().then(dataTemp=>{this.chartData.datasets[0].labels = dataTemp.timeValue; this.chartData.datasets[0].data = dataTemp.testTemp, console.log(dataTemp);}),
             chartOptions: {
               responsive: true
@@ -304,7 +304,6 @@ let promise = new Promise(function (resolve, reject){
         },
         
         created (){
-      
       const db = getDatabase();
         onValue(ref(db, 'hum'), (snapshot) => {
             const data = snapshot.val();
