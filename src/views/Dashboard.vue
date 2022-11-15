@@ -225,10 +225,11 @@ let promise = new Promise(function (resolve, reject){
   setTimeout(function (){
     resolve('Promise resolved')}, 2000);
   });
-
-  async function returnChartData(limitEntries, path, typeSensor){
+  
     let timeSensor = [];
     let valueSensor = [];
+  async function returnChartData(limitEntries, path, typeSensor){
+
     const db = getDatabase();
     if(load != true){
     get(query(ref(db,path), limitToLast(limitEntries))).then((snapshot)=>{
