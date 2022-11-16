@@ -206,6 +206,13 @@ let testTemp = [];
 let timeValue = [];
 var load = false;
 var timer;
+let timeTemp = [];
+let valueTemp = [];
+let timeTempExt = [];
+let valueTempExt = [];
+let timeHum = [];
+let valueHum = [];
+
 clearTimeout();
 
 
@@ -226,10 +233,82 @@ let promise = new Promise(function (resolve, reject){
     resolve('Promise resolved')}, 2000);
   });
   
-    let timeSensor = [];
-    let valueSensor = [];
-  async function returnChartData(limitEntries, path, typeSensor){
 
+
+    async function returnChartTemp(limitEntries){
+      const db = getDatabase();
+      if(load != true){
+        get(query(ref(db,'/sensor/Temperature'), limitToLast(limitEntries))).then((snapshot)=>{
+          if(snapshot){
+            load = true;
+            let data = snapshot.val();
+            for(var[, array] of Object.entries(data)){
+              for(var [type, value] of Object.entries(array)){
+                if(type=='temp'){
+                  valueTemp.push(value);
+                }
+                if(type=='time'){
+                  timeTemp.push(value);
+                }
+              }
+            }
+          }
+        })}
+        await promises;
+        return {timeTemp, valueTemp};
+      }
+
+
+  async function returnChartTempExt(limitEntries){
+      const db = getDatabase();
+      if(load != true){
+        get(query(ref(db,'/sensor/Temperature-Ext'), limitToLast(limitEntries))).then((snapshot)=>{
+          if(snapshot){
+            load = true;
+            let data = snapshot.val();
+            for(var[, array] of Object.entries(data)){
+              for(var [type, value] of Object.entries(array)){
+                if(type=='temp'){
+                  valueTempExt.push(value);
+                }
+                if(type=='time'){
+                  timeTempExt.push(value);
+                }
+              }
+            }
+          }
+        })}
+        await promises;
+        return {timeTempExt, valueTempExt};
+      }
+
+
+
+  async function returnChartHum(limitEntries){
+      const db = getDatabase();
+      if(load != true){
+        get(query(ref(db,'/sensor/Humidity'), limitToLast(limitEntries))).then((snapshot)=>{
+          if(snapshot){
+            load = true;
+            let data = snapshot.val();
+            for(var[, array] of Object.entries(data)){
+              for(var [type, value] of Object.entries(array)){
+                if(type=='hum'){
+                  valueHum.push(value);
+                }
+                if(type=='time'){
+                  timeHum.push(value);
+                }
+              }
+            }
+          }
+        })}
+        await promises;
+        return {timeHum, valueHum};
+      }
+
+
+  async function returnChartData(limitEntries, path, typeSensor){
     const db = getDatabase();
     if(load != true){
     get(query(ref(db,path), limitToLast(limitEntries))).then((snapshot)=>{
@@ -251,6 +330,8 @@ let promise = new Promise(function (resolve, reject){
     await promises;
     return {timeSensor, valueSensor};
   }
+
+
  export default {
     name: 'BarChart',
   components: { Bar },
@@ -291,15 +372,9 @@ let promise = new Promise(function (resolve, reject){
             temp: null,
             tempExt: null,
             historyTemp: null,
-            //chartData:{ labels: [ 'January', 'February', 'March', "2"], datasets: [ { data: viTemp().then(result=>{this.chartData.datasets[0].data = result.testTemp; console.log(result.testTemp);}) } ] },
-            //chartData:{ labels: [viTemp().then(result=>{this.chartData.labels = result.timeValue; console.log(result.timeValue)})], datasets: [ { data: viTemp().then(result=>{this.chartData.datasets[0].data = result.testTemp; console.log(result.testTemp);}) } ] },
-           // chartData:{ labels: [viTemp().then(result=>{this.chartData.labels = result.timeValue; this.chartData.datasets[0].data = result.testTemp; console.log(result.timeValue); console.log(result.testTemp)})], datasets: [ { } ] },
-            chartData:{ labels: [returnChartData(10,'/sensor/Temperature','temp').then( result =>{this.chartData.labels = result.timeSensor; this.chartData.datasets[0].data = result.valueSensor; console.log(result.timeSensor); console.log(result.valueSensor)})], datasets: [ { } ] },
-            chartDataTempExt:{ labels: [returnChartData(10,'/sensor/Temperature-Ext','temp').then(result=>{this.chartDataTempExt.labels = result.timeSensor; this.chartDataTempExt.datasets[0].data = result.valueSensor; console.log(result.timeSensor); console.log(result.valueSensor)})], datasets: [ { } ] },
-            chartDataTempHum:{ labels: [returnChartData(10,'/sensor/Humidity','hum').then(result=>{this.chartDataTempHum.labels = result.timeSensor; this.chartDataTempHum.datasets[0].data = result.valueSensor; console.log(result.timeSensor); console.log(result.valueSensor)})], datasets: [ { } ] },
-
-            //chartData:{ labels: viTemp().then(time=>{this.labels= time.timeValue}), datasets: [ { data: viTemp().then(dataTemp=>{this.chartData.datasets[0].data = dataTemp.testTemp; console.log(dataTemp.testTemp);}) } ] },
-            //chartData: viTemp().then(dataTemp=>{this.chartData.datasets[0].labels = dataTemp.timeValue; this.chartData.datasets[0].data = dataTemp.testTemp, console.log(dataTemp);}),
+            chartData:{ labels: [returnChartTemp(10).then( result =>{this.chartData.labels = result.timeTemp; this.chartData.datasets[0].data = result.valueTemp; console.log(result.timeTemp); console.log(result.valueTemp)})], datasets: [ { } ] },
+            chartDataTempExt:{ labels: [returnChartTempExt(10).then(result=>{this.chartDataTempExt.labels = result.timeTempExt; this.chartDataTempExt.datasets[0].data = result.valueTempExt; console.log(result.timeTempExt); console.log(result.valueTempExt)})], datasets: [ { } ] },
+            chartDataTempHum:{ labels: [returnChartHum(10).then(result=>{this.chartDataTempHum.labels = result.timeHum; this.chartDataTempHum.datasets[0].data = result.valueHum; console.log(result.timeHum); console.log(result.valueHum)})], datasets: [ { } ] },
             chartOptions: {
               responsive: true
             },
