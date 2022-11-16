@@ -185,6 +185,33 @@
   
 
 
+    <div class="col-lg-6 mb-4">
+     <div class="card shadow mb-4">
+      <div class="card-header py-3">
+       <h6 class="m-0 font-weight-bold text-primary">
+        Grafic umiditate
+       </h6>
+      </div>
+      <div class="card-body">
+       <div id="chart-container-light">
+        <Bar
+    :chart-options="chartOptions"
+    :chart-data="chartDataTest"
+    :chart-id="chartId"
+    :dataset-id-key="datasetIdKey"
+    :plugins="plugins"
+    :css-classes="cssClasses"
+    :styles="styles"
+    :width="width"
+    :height="height"
+  />
+
+       </div>
+      </div>
+     </div>
+    </div>
+
+  
     
 
 
@@ -212,6 +239,9 @@ let timeTempExt = [];
 let valueTempExt = [];
 let timeHum = [];
 let valueHum = [];
+
+let timeTest = [];
+let valueTest = [];
 
 clearTimeout();
 
@@ -308,6 +338,35 @@ let promise = new Promise(function (resolve, reject){
       }
 
 
+      async function returnChartTest(limitEntries){
+      const db = getDatabase();
+     
+        get(query(ref(db,'/sensor/Humidity'), limitToLast(limitEntries))).then((snapshot)=>{
+          if(snapshot){
+           
+            let data = snapshot.val();
+            for(var[, array] of Object.entries(data)){
+              for(var [type, value] of Object.entries(array)){
+                if(type=='hum'){
+                  valueTest.push(value);
+                }
+                if(type=='time'){
+                  timeTest.push(value);
+                }
+              }
+            }
+          }
+        })
+        await promises;
+        return {timeTest, valueTest};
+      }
+
+      let labelss = [1];
+      let datas = [1];
+      
+      returnChartTest(10).then(result=>{labelss = result.timeTest; datas = result.valueTest; console.log(result.timeTest); console.log(result.valueTest)})
+      
+
   async function returnChartData(limitEntries, path, typeSensor){
     const db = getDatabase();
     if(load != true){
@@ -330,6 +389,7 @@ let promise = new Promise(function (resolve, reject){
     await promises;
     return {timeSensor, valueSensor};
   }
+
 
 
  export default {
@@ -372,16 +432,34 @@ let promise = new Promise(function (resolve, reject){
             temp: null,
             tempExt: null,
             historyTemp: null,
-            chartData:{ labels: [returnChartTemp(10).then( result =>{this.chartData.labels = result.timeTemp; this.chartData.datasets[0].data = result.valueTemp; console.log(result.timeTemp); console.log(result.valueTemp)})], datasets: [ { } ] },
+            chartData:{ 
+              labels: [returnChartTemp(10).then( result =>{this.chartData.labels = result.timeTemp; this.chartData.datasets[0].data = result.valueTemp; console.log(result.timeTemp); console.log(result.valueTemp)})], 
+              datasets: [ { label: 'Temperatura',
+              backgroundColor: '#ff595e',
+              borderColor: '#ff595e',
+              hoverBackgroundColor: '#CCCCCC',
+              hoverBorderColor: '#666666'},] },
             chartDataTempExt:{ labels: [returnChartTempExt(10).then(result=>{this.chartDataTempExt.labels = result.timeTempExt; this.chartDataTempExt.datasets[0].data = result.valueTempExt; console.log(result.timeTempExt); console.log(result.valueTempExt)})], datasets: [ { } ] },
             chartDataTempHum:{ labels: [returnChartHum(10).then(result=>{this.chartDataTempHum.labels = result.timeHum; this.chartDataTempHum.datasets[0].data = result.valueHum; console.log(result.timeHum); console.log(result.valueHum)})], datasets: [ { } ] },
+            chartDataTest:{ labels: labelss, datasets:[{data: datas}]},
+            
             chartOptions: {
-              responsive: true
+              responsive: true,
+              scales: {
+                  yAxes: [{
+                    ticks: {
+                      beginAtZero: true,
+                      min: -50,
+                      max: 100
+                    }
+                  }]
+                }
             },
           }
         },
         
         created (){ 
+          
       const db = getDatabase();
         onValue(ref(db, 'hum'), (snapshot) => {
             const data = snapshot.val();
