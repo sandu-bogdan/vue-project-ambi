@@ -111,7 +111,7 @@
        <div id="chart-container">
  
         <Bar
-    :chart-options="chartOptions"
+    :chart-options="chartOptionsTemp"
     :chart-data="chartData"
     :chart-id="chartId"
     :dataset-id-key="datasetIdKey"
@@ -218,6 +218,9 @@
 
 </div>
 </div>
+
+<TestChart />
+
 
 </template>
 
@@ -390,6 +393,14 @@ let promise = new Promise(function (resolve, reject){
     return {timeSensor, valueSensor};
   }
 
+function addData(chart, label, data) {
+    chart.data.labels.push(label);
+    chart.data.datasets.forEach((dataset) => {
+        dataset.data.push(data);
+    });
+    chart.update();
+}
+
 
 
  export default {
@@ -443,7 +454,10 @@ let promise = new Promise(function (resolve, reject){
             chartDataTempHum:{ labels: [returnChartHum(10).then(result=>{this.chartDataTempHum.labels = result.timeHum; this.chartDataTempHum.datasets[0].data = result.valueHum; console.log(result.timeHum); console.log(result.valueHum)})], datasets: [ { } ] },
             chartDataTest:{ labels: labelss, datasets:[{data: datas}]},
             
-            chartOptions: {
+            chartOptionsTemp: {
+              animations:{
+                        animation: false
+                    },
               responsive: true,
               scales: {
                   yAxes: [{
@@ -459,7 +473,7 @@ let promise = new Promise(function (resolve, reject){
         },
         
         created (){ 
-          
+        
       const db = getDatabase();
         onValue(ref(db, 'hum'), (snapshot) => {
             const data = snapshot.val();
