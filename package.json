@@ -20,6 +20,7 @@
     "bootstrap": "^4.0.0-beta",
     "jquery": "^3.6.1",
     "popper.js": "^1.16.1",
-    "vite": "^3.1.8"
+    "vite": "^3.1.8",
+    "vue-mixins": "^0.3.6"
   }
 }

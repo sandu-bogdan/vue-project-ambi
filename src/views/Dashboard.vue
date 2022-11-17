@@ -109,7 +109,8 @@
       </div>
       <div class="card-body">
        <div id="chart-container">
- 
+        <p>Message is: {{ message }}</p>
+<input v-model="message" placeholder="edit me" />
         <Bar
     :chart-options="chartOptionsTemp"
     :chart-data="chartData"
@@ -438,6 +439,7 @@ function addData(chart, label, data) {
 },
     data () {
         return {
+          message: '10',
             hum: null,
             viewTemp: [1],
             temp: null,
@@ -445,16 +447,48 @@ function addData(chart, label, data) {
             historyTemp: null,
             chartData:{ 
               labels: [returnChartTemp(10).then( result =>{this.chartData.labels = result.timeTemp; this.chartData.datasets[0].data = result.valueTemp; console.log(result.timeTemp); console.log(result.valueTemp)})], 
-              datasets: [ { label: 'Temperatura',
-              backgroundColor: '#ff595e',
-              borderColor: '#ff595e',
-              hoverBackgroundColor: '#CCCCCC',
-              hoverBorderColor: '#666666'},] },
+              datasets: [ {
+                label: 'Temperature',
+                strokeColor : "#ff6c23",
+                    pointColor : "#fff",
+                    pointStrokeColor : "#ff6c23",
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: "#ff6c23",
+            
+            backgroundColor: (ctx) => {
+              const canvas = ctx.chart.ctx;
+              const gradient = canvas.createLinearGradient(0, 0, 0, 400);
+              gradient.addColorStop(0, 'rgba(250,51,50,1)');   
+              gradient.addColorStop(1, 'rgba(250,51,50,0)');
+
+              return gradient;
+            },
+          },] },
             chartDataTempExt:{ labels: [returnChartTempExt(10).then(result=>{this.chartDataTempExt.labels = result.timeTempExt; this.chartDataTempExt.datasets[0].data = result.valueTempExt; console.log(result.timeTempExt); console.log(result.valueTempExt)})], datasets: [ { } ] },
             chartDataTempHum:{ labels: [returnChartHum(10).then(result=>{this.chartDataTempHum.labels = result.timeHum; this.chartDataTempHum.datasets[0].data = result.valueHum; console.log(result.timeHum); console.log(result.valueHum)})], datasets: [ { } ] },
-            chartDataTest:{ labels: labelss, datasets:[{data: datas}]},
+            chartDataTest:{ labels: labelss,
             
+            datasets:[{data: datas,
+              
+              strokeColor : "#ff6c23",
+                    pointColor : "#fff",
+                    pointStrokeColor : "#ff6c23",
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: "#ff6c23",
+            
+            backgroundColor: (ctx) => {
+              const canvas = ctx.chart.ctx;
+              const gradient = canvas.createLinearGradient(0, 0, 0, 400);
+              gradient.addColorStop(0, 'rgba(250,174,50,1)');   
+              gradient.addColorStop(1, 'rgba(250,174,50,0)');
+
+              return gradient;
+            },
+          
+          }]},
+           
             chartOptionsTemp: {
+              scaleLabel : "<%= Number(value).toFixed(0).replace('.', ',') + '°C'%>",
               animations:{
                         animation: false
                     },
