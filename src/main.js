@@ -20,6 +20,7 @@ import './assets/login.css'
 import './assets/js/vendor/jquery/jquery.min.js'
 import './assets/js/vendor/bootstrap/js/bootstrap.bundle.min.js'
 import './assets/js/sb-admin-2.min.js'
+import './assets/bootstrap.min.css'
 
 
 const app = createApp(App)

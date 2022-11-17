@@ -27,7 +27,7 @@
 
             <li v-if="isLoggedIn" class="nav-item">
             <a @click="handleSignOut" class="nav-link" to="/sign-in"><i class="fas fa-sign-out-alt fa-fw"></i>
-              Sign Out</a>
+              Logout</a>
             </li>
           <hr class="sidebar-divider d-none d-md-block">
             <!-- Sidebar Toggler (Sidebar) -->
@@ -60,7 +60,7 @@
                     </a>
                     <!-- Dropdown - User Information -->
                     <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                        <a class="dropdown-item" href="logout.php">
+                      <a @click="handleSignOut" class="dropdown-item" to="/sign-in">
                             <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                             Logout
                         </a>

@@ -173,7 +173,7 @@
       <div class="card-body">
        <div id="chart-container-light">
         <Bar
-    :chart-options="chartOptions"
+    :chart-options="chartOptionsHum"
     :chart-data="chartDataTempHum"
     :chart-id="chartId"
     :dataset-id-key="datasetIdKey"
@@ -505,6 +505,26 @@ function addData(chart, label, data) {
                           max: 40,
                           callback: function(value, index, values) {
                               return value + '°C';
+                          }
+                      }
+                      
+                  }
+                }
+            },
+            chartOptionsHum: {
+              scaleLabel : "<%= Number(value).toFixed(0).replace('.', ',') + '%'%>",
+              animations:{
+                        animation: false
+                    },
+              responsive: true,
+              scales: {
+                  yAxes: {
+                      ticks: {
+                          beginAtZero: true,
+                          stepSize: 1,
+                          max: 40,
+                          callback: function(value, index, values) {
+                              return value + '%';
                           }
                       }
                       

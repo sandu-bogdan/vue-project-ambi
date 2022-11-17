@@ -13,3 +13,10 @@
 50%{opacity: .5;}
 100%{opacity: 1;}
 }
+.sidebar .nav-item .nav-link {
+    cursor: pointer;
+    font-size: small;
+}
+.dropdown-item {
+    cursor: pointer;
+}
