@@ -9,30 +9,25 @@
             <div class="sidebar-brand-text mx-3">AMBI <sup>PI NEWs</sup></div>
           </a>
           <hr class="sidebar-divider my-0">
-          <li class="nav-item active">
+          <li v-if="isLoggedIn" class="nav-item active">
           <RouterLink class="nav-link" to="/"><i class="fas fa-fw fa-tachometer-alt"></i>
-              Prima pagina</RouterLink>
+              Home</RouterLink>
             </li>
           <hr class="sidebar-divider">
 
-          <li class="nav-item">
-            <RouterLink class="nav-link" to="/about"><i class="fas fa-history fa-fw"></i>
-              About</RouterLink>
-            </li>
-
-            <li class="nav-item">
-            <RouterLink class="nav-link" to="/dashboard"><i class="fas fa-history fa-fw"></i>
+            <li v-if="isLoggedIn" class="nav-item">
+            <RouterLink class="nav-link" to="/dashboard"><i class="fas fa fa-home fa-fw"></i>
               Dashboard</RouterLink>
             </li>
 
             <li v-if="!isLoggedIn" class="nav-item">
-            <RouterLink class="nav-link" to="/sign-in"><i class="fas fa-history fa-fw"></i>
-              Auth</RouterLink>
+            <RouterLink class="nav-link" to="/sign-in"><i class="fas fa-sign-in-alt fa-fw"></i>
+              Sign In</RouterLink>
             </li>
 
             <li v-if="isLoggedIn" class="nav-item">
-            <a @click="handleSignOut" class="nav-link" to="/sign-in"><i class="fas fa-history fa-fw"></i>
-              SignOut</a>
+            <a @click="handleSignOut" class="nav-link" to="/sign-in"><i class="fas fa-sign-out-alt fa-fw"></i>
+              Sign Out</a>
             </li>
           <hr class="sidebar-divider d-none d-md-block">
             <!-- Sidebar Toggler (Sidebar) -->
@@ -80,7 +75,6 @@
 <!-- Begin Page Content -->
 
 <RouterView/>
-<router-link to="/add" class="nav-link">Add</router-link>
 </div>
 </div>
 </div>

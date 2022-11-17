@@ -51,7 +51,7 @@ bg order-1 order-md-2 {
         .then((data) => {
             console.log("Login Success!");
             console.log(auth.currentUser);
-            router.push('/feed')
+            router.push('/dashboard')
         })
         .catch((error) => {
             console.log(error.code);

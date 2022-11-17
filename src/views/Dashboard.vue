@@ -110,9 +110,15 @@
       <div class="card-body">
        <div id="chart-container">
         <p>Message is: {{ message }}</p>
+        <form onchange="console.log('changed!')">
 <input v-model="message" placeholder="edit me" />
+</form>
+
+
+
+
         <Bar
-    :chart-options="chartOptionsTemp"
+    :chart-options="chartOptions"
     :chart-data="chartData"
     :chart-id="chartId"
     :dataset-id-key="datasetIdKey"
@@ -219,8 +225,6 @@
 
 </div>
 </div>
-
-<TestChart />
 
 
 </template>
@@ -446,7 +450,7 @@ function addData(chart, label, data) {
             tempExt: null,
             historyTemp: null,
             chartData:{ 
-              labels: [returnChartTemp(10).then( result =>{this.chartData.labels = result.timeTemp; this.chartData.datasets[0].data = result.valueTemp; console.log(result.timeTemp); console.log(result.valueTemp)})], 
+              labels: [returnChartTemp(30).then( result =>{this.chartData.labels = result.timeTemp; this.chartData.datasets[0].data = result.valueTemp; console.log(result.timeTemp); console.log(result.valueTemp)})], 
               datasets: [ {
                 label: 'Temperature',
                 strokeColor : "#ff6c23",
@@ -487,20 +491,24 @@ function addData(chart, label, data) {
           
           }]},
            
-            chartOptionsTemp: {
+          chartOptions: {
               scaleLabel : "<%= Number(value).toFixed(0).replace('.', ',') + '°C'%>",
               animations:{
                         animation: false
                     },
               responsive: true,
               scales: {
-                  yAxes: [{
-                    ticks: {
-                      beginAtZero: true,
-                      min: -50,
-                      max: 100
-                    }
-                  }]
+                  yAxes: {
+                      ticks: {
+                          beginAtZero: true,
+                          stepSize: 1,
+                          max: 40,
+                          callback: function(value, index, values) {
+                              return value + '°C';
+                          }
+                      }
+                      
+                  }
                 }
             },
           }
