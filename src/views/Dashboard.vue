@@ -406,7 +406,12 @@ function addData(chart, label, data) {
     chart.update();
 }
 
-
+let numberOfValueChart;
+onValue(ref(getDatabase(), '/configuration/numberOfValueChart'), (snapshot) => {
+            const data = snapshot.val();
+            console.log(Number(data).toFixed(2));
+            numberOfValueChart = data;
+        });
 
  export default {
     name: 'BarChart',
@@ -450,7 +455,7 @@ function addData(chart, label, data) {
             tempExt: null,
             historyTemp: null,
             chartData:{ 
-              labels: [returnChartTemp(30).then( result =>{this.chartData.labels = result.timeTemp; this.chartData.datasets[0].data = result.valueTemp; console.log(result.timeTemp); console.log(result.valueTemp)})], 
+              labels: [returnChartTemp(numberOfValueChart).then( result =>{this.chartData.labels = result.timeTemp; this.chartData.datasets[0].data = result.valueTemp; console.log(result.timeTemp); console.log(result.valueTemp)})], 
               datasets: [ {
                 label: 'Temperature',
                 strokeColor : "#ff6c23",
@@ -557,6 +562,8 @@ function addData(chart, label, data) {
             const tempExt = data;
             this.tempExt = Number(tempExt).toFixed(2);
         });
+
+
 
         onValue(query(ref(db, '/sensor/Temperature'), limitToLast(5)), (snapshot) => {
             const data = snapshot.val();
