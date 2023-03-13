@@ -248,11 +248,17 @@ let valueTempExt = [];
 let timeHum = [];
 let valueHum = [];
 
+let valueChart = 10;
+
 let timeTest = [];
 let valueTest = [];
 
 clearTimeout();
 
+
+
+
+let variable= 1;
 
 let promises = new Promise(resolve => {
     if (document.readyState !== 'loading') {
@@ -266,6 +272,11 @@ let promises = new Promise(resolve => {
     document.addEventListener("DOMContentLoaded", () => clearTimeout(timer));
 });
 
+
+
+
+
+
 let promise = new Promise(function (resolve, reject){
   setTimeout(function (){
     resolve('Promise resolved')}, 2000);
@@ -273,10 +284,18 @@ let promise = new Promise(function (resolve, reject){
   
 
 
-    async function returnChartTemp(limitEntries){
+  async function returnChartTemp(limitEntries){
       const db = getDatabase();
-      if(load != true){
-        get(query(ref(db,'/sensor/Temperature'), limitToLast(limitEntries))).then((snapshot)=>{
+    
+      let numberOfValueChart;
+      onValue(ref(getDatabase(), '/configuration/numberOfValueChart'), (snapshot) => {
+         if(load != true){
+            const data = snapshot.val();
+            console.log(Number(data).toFixed(2));
+            numberOfValueChart = Number(data);
+
+           
+        get(query(ref(db,'/sensor/Temperature'), limitToLast(numberOfValueChart))).then((snapshot)=>{
           if(snapshot){
             load = true;
             let data = snapshot.val();
@@ -292,6 +311,9 @@ let promise = new Promise(function (resolve, reject){
             }
           }
         })}
+
+        });
+      
         await promises;
         return {timeTemp, valueTemp};
       }
@@ -406,12 +428,6 @@ function addData(chart, label, data) {
     chart.update();
 }
 
-let numberOfValueChart;
-onValue(ref(getDatabase(), '/configuration/numberOfValueChart'), (snapshot) => {
-            const data = snapshot.val();
-            console.log(Number(data).toFixed(2));
-            numberOfValueChart = data;
-        });
 
  export default {
     name: 'BarChart',
@@ -455,7 +471,7 @@ onValue(ref(getDatabase(), '/configuration/numberOfValueChart'), (snapshot) => {
             tempExt: null,
             historyTemp: null,
             chartData:{ 
-              labels: [returnChartTemp(numberOfValueChart).then( result =>{this.chartData.labels = result.timeTemp; this.chartData.datasets[0].data = result.valueTemp; console.log(result.timeTemp); console.log(result.valueTemp)})], 
+              labels: [returnChartTemp(10).then( result =>{this.chartData.labels = result.timeTemp; this.chartData.datasets[0].data = result.valueTemp; console.log(result.timeTemp); console.log(result.valueTemp)})], 
               datasets: [ {
                 label: 'Temperature',
                 strokeColor : "#ff6c23",
